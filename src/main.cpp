@@ -2,10 +2,11 @@
 #include "OptWord.h"
 #include <iostream>
 #include "Options.h"
+#include "FileHandler.h"
 using namespace std;
 OptChars opt;
 OptWord opt2;
-
+FileHandler fileobj;
 int main(int argc, char** argv)
 {
 	try
@@ -65,7 +66,8 @@ int main(int argc, char** argv)
 					{
 						cout << "Ready to perform some file action."
 								<< " The char command got me here" << endl;
-						//OptFileRead()
+							fileobj.setFileName("test_file.txt");
+							fileobj.readFile();
 					}
 				}
 			}
