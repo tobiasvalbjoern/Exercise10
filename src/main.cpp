@@ -66,8 +66,17 @@ int main(int argc, char** argv)
 					{
 						cout << "Ready to perform some file action."
 								<< " The char command got me here" << endl;
-							fileobj.setFileName("test_file.txt");
-							fileobj.readFile();
+							//fileobj.setFileName("test_file.txt");
+						char* filename=NULL;
+						if (argc>o+1)
+						{
+						filename=argv[o+1];
+						cout << "Here is the filename:\ " << filename << endl;
+						}
+						else
+							cout << "No file name" << filename << endl;
+						fileobj.setFileName(filename);
+						fileobj.readFile();
 					}
 				}
 			}

@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include "FileHandler.h"
+
 using namespace std;
 
 FileHandler::FileHandler()
@@ -21,11 +23,15 @@ void FileHandler::setFileName(char* file_user)
 	filename = file_user;
 }
 
+void FileHandler::writeLog()
+{
+
+}
+
 void FileHandler::readFile()
 {
-	cout << "going to read from the newly written file" << endl;
-	// ifstream is the counterpart of ofstream
-	//ifstream infile ("./example.txt");
+	cout << "Reading the log" << endl;
+
 	ifstream infile(filename);
 	if (infile.is_open())
 	{
@@ -46,13 +52,31 @@ void FileHandler::readFile()
 		cout << "This was read from the file: " << endl << buf << endl;
 		// Deliver back what you borrowed
 		delete[] buf;
-		return;
 	}
 	else
 	{
 		cout << "was not able to open the file for reading" << endl;
 		return;
 	}
+
+	ofstream outfile;
+	outfile.open(filename, std::ios_base::app);
+
+	if (outfile.is_open())
+	{
+		// current date/time based on current system
+		time_t now = time(0);
+
+		// convert now to string form
+		char* dt = ctime(&now);
+		outfile << "\nDate and time for the last read: " << dt<<endl;
+	}
+	else
+	{
+		cout << "was not able to open the file for writing" << endl;
+		return;
+	}
+	return;
 
 	cout << "was not able to open the file for writing" << endl;
 	return;

@@ -6,8 +6,10 @@ class FileHandler
 public:
 	FileHandler();
 	virtual ~FileHandler();
-	void readFile();
 	void setFileName(char* file_user);
+	void writeLog();
+	void readFile();
+
 
 protected:
 	//protected vars are inherrited as private
