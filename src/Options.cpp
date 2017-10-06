@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 Options::Options()
 {
 
@@ -16,11 +15,9 @@ Options::Options()
 	argC = 0;
 	argV = NULL;
 
-
 	optstring = "";
 	count = 1; 			//count is the iterator used to select argV
 }
-
 
 Options::Options(int argc, const char **argv)
 {
@@ -35,6 +32,14 @@ void Options::setOptstring(string &validopt)
 {
 	//getopt() can't reset count, so rather here than a explicit function
 	count = 0;
+
+	//this could be done inside the validopt
+	//test if the CHARS are set by the programmer
+	if (validopt.length() == 0)
+	{
+		throw 1;
+	}
+
 	optstring = validopt;
 }
 

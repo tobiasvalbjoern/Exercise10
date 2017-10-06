@@ -9,13 +9,20 @@ using namespace std;
 
 //we use the global option for single dashes, and local for doble dashes.
 //this exercises is used as a template on how to use both.
-OptChars gopt;
+//we tried to make a base function for numopt, setopstring. This has added
+//a complexity that was not needed, if we had just implemented them in the
+//children classes
 FileHandler fileobj;
+OptChars gopt;
+
+void case_f(int argc, const char** argv, int o);
+void case_file(int argc, const char** argv);
+
 int main(int argc, char const **argv)
 {
 	try
 	{
-		int WordArgs=0;
+		int WordArgs = 0;
 		const int i = 3;
 		string validOpt = "abof";
 		//number of valid options.
@@ -24,29 +31,20 @@ int main(int argc, char const **argv)
 		validWords[1] = "help";
 		validWords[2] = "file";
 
-		//test if the CHARS are set by the programmer
-		if (validOpt.length() == 0)
+		//while using the global object. It will catch if there is no input
+		if (!gopt.setArguments(argc, argv))
 		{
-			throw 1;
+			cout
+					<< "Could not set arguments in global object. \n"
+					<<"Leaving this world."
+					<< endl;
+			throw(-1);
 		}
 
-		//test if the WORDS are set by the programmer
-		for (int j = 0; j < i; ++j)
-		{
-			if (validWords[j].length() == 0)
-			{
-				throw 2;
-			}
-		}
-
-		if (!gopt.setArguments(argc,argv))
-		{
-			cout << "Could not set arguments in global object. \nLeaving this world."
-			    << endl;
-			return (-1);
-		}
-
-
+		//while using the global object. The program will recognize when there
+		//is no input. You could give a detailed information
+		if (argc < 2)
+			throw(-2);
 
 		//copy dynamically allocated obj to the global class and clean up
 		OptWord *opts = new OptWord(argc, (const char**) argv);
@@ -67,20 +65,7 @@ int main(int argc, char const **argv)
 
 					if (str == "f")
 					{
-						cout << "Ready to perform some file action."
-								<< " The char handler got me here" << endl;
-						//fileobj.setFileName("test_file.txt");
-						const char* filename = NULL;
-						if (argc > o + 1)
-						{
-							filename = argv[o + 1];
-							cout << "Here is the filename:\n " << filename
-									<< endl;
-						}
-						else
-							cout << "No file name" << filename << endl;
-						fileobj.setFileName(filename);
-						fileobj.readFile();
+						case_f(argc, argv, o);
 					}
 				}
 			}
@@ -103,6 +88,7 @@ int main(int argc, char const **argv)
 			for (int j = 0; j < i; j++)
 			{
 				opts->setOptstring(validWords[j]);
+
 				for (int o = 1; o <= WordArgs; o++)
 				{
 					string str = opts->getopt();
@@ -112,33 +98,14 @@ int main(int argc, char const **argv)
 
 						if (str == "file")
 						{
-							cout << "Ready to perform some file action."
-									<< " The word command got me here" << endl;
-
-							const char* filename = NULL;
-
-							for (int a = 1; a < argc; a++)
-							{
-								if (string(argv[a]) == "--file")
-								{
-									filename = argv[a + 1];
-									cout << "Here is the filename:\n "
-											<< filename << endl;
-									if (!filename)
-										cout << "No file name" << filename
-												<< endl;
-
-									fileobj.setFileName(filename);
-									fileobj.readFile();
-								}
-
-							}
+							case_file(argc, argv);
 
 						}
 
 					}
 				}
 			}
+			delete opts;
 		}
 	} catch (int x)
 	{
@@ -151,4 +118,47 @@ int main(int argc, char const **argv)
 		cout << "something went wrong" << endl;
 	}
 	return (0);
+}
+
+void case_f(int argc, const char** argv, int o)
+{
+	cout << "Ready to perform some file action."
+			<< " The char handler got me here" << endl;
+	//fileobj.setFileName("test_file.txt");
+	const char* filename = NULL;
+
+	if (argc > o + 1)
+	{
+		filename = argv[o + 1];
+		cout << "Here is the filename:\n " << filename << endl;
+	}
+	else
+		cout << "No file name" << filename << endl;
+
+	fileobj.setFileName(filename);
+	fileobj.readFile();
+}
+
+void case_file(int argc, const char** argv)
+{
+	cout << "Ready to perform some file action."
+			<< " The word command got me here" << endl;
+
+	const char* filename = NULL;
+
+	for (int a = 1; a < argc; a++)
+	{
+		if (string(argv[a]) == "--file")
+		{
+			filename = argv[a + 1];
+			cout << "Here is the filename:\n " << filename << endl;
+			if (!filename)
+				cout << "No file name" << filename << endl;
+
+			fileobj.setFileName(filename);
+			fileobj.readFile();
+		}
+
+	}
+
 }
