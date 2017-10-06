@@ -44,7 +44,7 @@ all: Exercise10
 Exercise10: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "Exercise10" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -ftest-coverage -fprofile-arcs -o "Exercise10" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -5,13 +5,15 @@
 #include <iostream>
 using namespace std;
 
-OptWord::OptWord(int argc, const char **argv) {
-	argC = argc;
-	argV = (char**) argv;
-	optstring = "";
-	count = 1;
+OptWord::OptWord() {
 }
 
+
+
+OptWord::OptWord(int argc, char const ** argv) {
+	argC=argc;
+	argV=argv;
+}
 
 OptWord::OptWord(const OptWord &rhs) {
 
@@ -23,12 +25,7 @@ OptWord::OptWord(const OptWord &rhs) {
 
 
 
-OptWord::OptWord() {
-}
 
-OptWord::~OptWord() {
-
-}
 
 //This looks for the WORD commands starting with '--'
 string OptWord::getopt(void) {
@@ -41,9 +38,9 @@ string OptWord::getopt(void) {
 
 			if (str == optstring) {			//Is this a valid option?
 				count++;
-				return optstring;			//If yes, return it.
+				return (optstring);			//If yes, return it.
 			}
 		}
 	}
-	return "INVALID";						//If no, return "INVALID"
+	return ("INVALID");						//If no, return "INVALID"
 }

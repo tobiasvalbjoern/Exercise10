@@ -5,10 +5,10 @@
 class OptChars : public Options			   //derived from class Options
 {
 public:
+	OptChars(int argc, char const ** argv);
     OptChars();
-    OptChars(int argc, const char **argv); //saves args to private vars
     OptChars(const OptChars &rhs);		   //copy constructor
-    virtual ~OptChars();
+    virtual ~OptChars(){};
 	string getopt(void);				   //returns all valid CHARS on cmd
 };
 

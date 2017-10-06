@@ -5,16 +5,15 @@
 #include <iostream>
 using namespace std;
 
-
-
-OptChars::OptChars(int argc, const char **argv)
+OptChars::OptChars()
 {
-	argC = argc;
-	argV = (char**) argv;
-	optstring = "";
-	count = 1;
 }
 
+OptChars::OptChars(int argc, char const ** argv)
+{
+	argC=argc;
+	argV=argv;
+}
 
 OptChars::OptChars(const OptChars &rhs)
 {
@@ -26,15 +25,8 @@ OptChars::OptChars(const OptChars &rhs)
 }
 
 
-OptChars::OptChars()
-{
-}
 
 
-OptChars::~OptChars()
-{
-
-}
 
 //This looks for the CHAR commands starting with '-'
 string OptChars::getopt(void)
@@ -52,11 +44,11 @@ string OptChars::getopt(void)
 			if(argV[count][1] == optstring[j]) 	//Is this a valid option?
 					{
 				count++;
-				return optstring.substr(j,1);	//If yes, return it.
+				return (optstring.substr(j,1));	//If yes, return it.
 					}
 				}
 			}
 		}
 
-	return "INVALID";							//If no, return "INVALID"
+	return ("INVALID");							//If no, return "INVALID"
 }

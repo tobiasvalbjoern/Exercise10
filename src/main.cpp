@@ -1,18 +1,22 @@
 #include "OptChars.h"
 #include "OptWord.h"
 #include <iostream>
+#include <assert.h>
+
 #include "Options.h"
 #include "FileHandler.h"
 using namespace std;
-OptChars opt;
-OptWord opt2;
+
+//we use the global option for single dashes, and local for doble dashes.
+//this exercises is used as a template on how to use both.
+OptChars gopt;
 FileHandler fileobj;
-int main(int argc, char** argv)
+int main(int argc, char const **argv)
 {
 	try
 	{
-		int WordArgs;
-		int i = 3;
+		int WordArgs=0;
+		const int i = 3;
 		string validOpt = "abof";
 		//number of valid options.
 		string validWords[i];
@@ -27,7 +31,7 @@ int main(int argc, char** argv)
 		}
 
 		//test if the WORDS are set by the programmer
-		for (int j = 0; j < i; j++)
+		for (int j = 0; j < i; ++j)
 		{
 			if (validWords[j].length() == 0)
 			{
@@ -35,29 +39,28 @@ int main(int argc, char** argv)
 			}
 		}
 
-		//copy dynamically allocated obj to the global class and clean up
-		OptChars *obj;
-		obj = new OptChars(argc, (const char**) argv);
-		opt = *obj;
-		delete obj;
-		obj = NULL;
+		if (!gopt.setArguments(argc,argv))
+		{
+			cout << "Could not set arguments in global object. \nLeaving this world."
+			    << endl;
+			return (-1);
+		}
+
+
 
 		//copy dynamically allocated obj to the global class and clean up
-		OptWord *obj2;
-		obj2 = new OptWord(argc, (const char**) argv);
-		opt2 = *obj2;
-		delete obj2;
-		obj2 = NULL;
+		OptWord *opts = new OptWord(argc, (const char**) argv);
 
-		//sets the valid options for '-' commands, count them up and loop them out
-		opt.setOptstring(validOpt);
-		int args = opt.numopt();
+		//sets the valid options for '-' commands,
+		//count them up and loop them out
+		gopt.setOptstring(validOpt);
+		int args = gopt.numopt();
 		if (args != 0)
 		{
 			cout << "Valid chars on cmdline: " << args << endl;
-			for (int o = 1; o <= args; o++)
+			for (int o = 1; o <= args; ++o)
 			{
-				string str = opt.getopt();
+				string str = gopt.getopt();
 				if (str != "INVALID")			//don't want to spam "INVALID"
 				{
 					cout << "Found match: -" << str << endl;
@@ -65,13 +68,14 @@ int main(int argc, char** argv)
 					if (str == "f")
 					{
 						cout << "Ready to perform some file action."
-								<< " The char command got me here" << endl;
-							//fileobj.setFileName("test_file.txt");
-						char* filename=NULL;
-						if (argc>o+1)
+								<< " The char handler got me here" << endl;
+						//fileobj.setFileName("test_file.txt");
+						const char* filename = NULL;
+						if (argc > o + 1)
 						{
-						filename=argv[o+1];
-						cout << "Here is the filename:\ " << filename << endl;
+							filename = argv[o + 1];
+							cout << "Here is the filename:\n " << filename
+									<< endl;
 						}
 						else
 							cout << "No file name" << filename << endl;
@@ -86,8 +90,8 @@ int main(int argc, char** argv)
 		//sets the valid options for '--' commands and count them up
 		for (int j = 0; j < i; j++)
 		{
-			opt2.setOptstring(validWords[j]);
-			args = opt2.numopt();
+			opts->setOptstring(validWords[j]);
+			args = opts->numopt();
 			WordArgs += args;
 		}
 		if (WordArgs != 0)
@@ -98,10 +102,10 @@ int main(int argc, char** argv)
 			// take a string each and needs to be set each time
 			for (int j = 0; j < i; j++)
 			{
-				opt2.setOptstring(validWords[j]);
+				opts->setOptstring(validWords[j]);
 				for (int o = 1; o <= WordArgs; o++)
 				{
-					string str = opt2.getopt();
+					string str = opts->getopt();
 					if (str != "INVALID")		//don't want to spam "INVALID"
 					{
 						cout << "Found match: --" << str << endl;
@@ -110,7 +114,26 @@ int main(int argc, char** argv)
 						{
 							cout << "Ready to perform some file action."
 									<< " The word command got me here" << endl;
-							//aktivér file klasse
+
+							const char* filename = NULL;
+
+							for (int a = 1; a < argc; a++)
+							{
+								if (string(argv[a]) == "--file")
+								{
+									filename = argv[a + 1];
+									cout << "Here is the filename:\n "
+											<< filename << endl;
+									if (!filename)
+										cout << "No file name" << filename
+												<< endl;
+
+									fileobj.setFileName(filename);
+									fileobj.readFile();
+								}
+
+							}
+
 						}
 
 					}
@@ -127,5 +150,5 @@ int main(int argc, char** argv)
 	{
 		cout << "something went wrong" << endl;
 	}
-	return 0;
+	return (0);
 }

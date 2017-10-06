@@ -6,25 +6,32 @@
 #include <stdexcept>
 #include <vector>
 
-
 using namespace std;
+
 
 Options::Options()
 {
+
 	//init
 	argC = 0;
 	argV = NULL;
+
+
 	optstring = "";
 	count = 1; 			//count is the iterator used to select argV
 }
 
-Options::~Options()
-{
 
+Options::Options(int argc, const char **argv)
+{
+	argC = argc;
+	argV = argv;
+	optstring = "";
+	count = 1;
 }
 
 //reads in the valid options from main
-void Options::setOptstring(string validopt)
+void Options::setOptstring(string &validopt)
 {
 	//getopt() can't reset count, so rather here than a explicit function
 	count = 0;
@@ -42,7 +49,21 @@ int Options::numopt(void)
 		number++;
 	}
 	count = 0;
-	return number;
+	return (number);
 }
 
+/*
+ * setArguments is needed if default constructor was used to create an
+ * object of this class
+ */
+bool Options::setArguments(int argc, const char **argv)
+{
+	if (argc > 1 && argv != NULL)
+	{
+		argC = argc;
+		argV = argv;
+		return (true);
+	}
+	return (false);
 
+}

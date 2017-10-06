@@ -18,15 +18,11 @@ FileHandler::~FileHandler()
 
 }
 
-void FileHandler::setFileName(char* file_user)
+void FileHandler::setFileName(const char* file_user)
 {
 	filename = file_user;
 }
 
-void FileHandler::writeLog()
-{
-
-}
 
 void FileHandler::readFile()
 {
@@ -39,7 +35,7 @@ void FileHandler::readFile()
 		infile.seekg(0, ios::end);
 		// Now the read pointer are at the end of the file, i.e. tellg will
 		// tell us the position which is equal to the length.
-		int len = infile.tellg();
+		long int len = infile.tellg();
 		// Go to the beginning again
 		infile.seekg(0, ios::beg);
 		cout << "there are " << len << " bytes in the file" << endl;
@@ -76,8 +72,6 @@ void FileHandler::readFile()
 		cout << "was not able to open the file for writing" << endl;
 		return;
 	}
-	return;
 
-	cout << "was not able to open the file for writing" << endl;
 	return;
 }
